@@ -4,6 +4,8 @@
  */
 package RentGUI;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Steven Law
@@ -11,10 +13,25 @@ package RentGUI;
 public class RentIt extends javax.swing.JFrame {
 
     /**
-     * Creates new form RentIt
+     * Creates new form RentIt.<br />
+     * <ol>
+     *  <li>Generated initComponents()</li>
+     *  <li>Disables the tabs other than the login tab</li>
+     *  <li>Disables the logout button and menu item</li>
+     *  <li>Disables the resarvation search field</li>
+     * </ol>
      */
     public RentIt() {
         initComponents();
+        // disabling the later panes
+        jTabbedPane1.setEnabledAt(1, false);
+        jTabbedPane1.setEnabledAt(2, false);
+        jTabbedPane1.setEnabledAt(3, false);
+        // disabling logging out
+        logoutButton.setEnabled(false);
+        logoutMenuItem.setEnabled(false);
+        // disabling the reservation search field
+        reservationSearchField.setEnabled(false);
     }
 
     /**
@@ -44,14 +61,46 @@ public class RentIt extends javax.swing.JFrame {
         customerList = new javax.swing.JList();
         addCustomerButton = new javax.swing.JButton();
         newTranactionButton = new javax.swing.JButton();
+        deleteCustomerButton = new javax.swing.JButton();
         reservationsPanel = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        resSearchTypeComboBox = new javax.swing.JComboBox();
+        reservationSearchField = new javax.swing.JTextField();
+        reservationSearchButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        reservationTable = new javax.swing.JTable();
+        cancelReservationButton = new javax.swing.JButton();
+        editReservationButton = new javax.swing.JButton();
         administrationPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        userList = new javax.swing.JList();
+        addUserButton = new javax.swing.JButton();
+        editUserButton = new javax.swing.JButton();
+        deleteUserButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        adminItemSearchField = new javax.swing.JTextField();
+        adminItemSearchButton = new javax.swing.JButton();
+        adminAddItemButton = new javax.swing.JButton();
+        adminEditItemButton = new javax.swing.JButton();
+        adminDeleteItemButton = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        adminItemList = new javax.swing.JList();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        logoutMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         quitMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(530, 480));
+        setPreferredSize(new java.awt.Dimension(530, 480));
+
+        jTabbedPane1.setMinimumSize(new java.awt.Dimension(517, 420));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -65,9 +114,31 @@ public class RentIt extends javax.swing.JFrame {
 
         jLabel4.setText("Password");
 
+        userNameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userNameFieldActionPerformed(evt);
+            }
+        });
+
+        passwordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordFieldActionPerformed(evt);
+            }
+        });
+
         loginButton.setText("Login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
+            }
+        });
 
         logoutButton.setText("Logout");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout loginPanelLayout = new javax.swing.GroupLayout(loginPanel);
         loginPanel.setLayout(loginPanelLayout);
@@ -112,7 +183,7 @@ public class RentIt extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(loginButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                 .addComponent(logoutButton)
                 .addContainerGap())
         );
@@ -134,6 +205,8 @@ public class RentIt extends javax.swing.JFrame {
 
         newTranactionButton.setText("New Transaction");
 
+        deleteCustomerButton.setText("Delete Customer");
+
         javax.swing.GroupLayout transactionsPanelLayout = new javax.swing.GroupLayout(transactionsPanel);
         transactionsPanel.setLayout(transactionsPanelLayout);
         transactionsPanelLayout.setHorizontalGroup(
@@ -151,9 +224,11 @@ public class RentIt extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addGroup(transactionsPanelLayout.createSequentialGroup()
                                 .addComponent(addCustomerButton)
+                                .addGap(6, 6, 6)
+                                .addComponent(deleteCustomerButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(newTranactionButton)))
-                        .addGap(0, 272, Short.MAX_VALUE)))
+                        .addGap(0, 153, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         transactionsPanelLayout.setVerticalGroup(
@@ -166,43 +241,223 @@ public class RentIt extends javax.swing.JFrame {
                     .addComponent(customerSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(customerSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newTranactionButton)
-                    .addComponent(addCustomerButton))
+                    .addComponent(addCustomerButton)
+                    .addComponent(deleteCustomerButton))
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Transactions", transactionsPanel);
 
+        jLabel6.setText("Search Reservations");
+
+        resSearchTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All unreturned", "Currently out", "Customer", "Employee" }));
+        resSearchTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resSearchTypeComboBoxActionPerformed(evt);
+            }
+        });
+
+        reservationSearchButton.setText("Search");
+
+        reservationTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(reservationTable);
+
+        cancelReservationButton.setText("Cancel Reservation");
+
+        editReservationButton.setText("Edit Reservation");
+
         javax.swing.GroupLayout reservationsPanelLayout = new javax.swing.GroupLayout(reservationsPanel);
         reservationsPanel.setLayout(reservationsPanelLayout);
         reservationsPanelLayout.setHorizontalGroup(
             reservationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 512, Short.MAX_VALUE)
+            .addGroup(reservationsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(reservationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addGroup(reservationsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resSearchTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reservationSearchField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reservationSearchButton))
+                    .addGroup(reservationsPanelLayout.createSequentialGroup()
+                        .addComponent(editReservationButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelReservationButton)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         reservationsPanelLayout.setVerticalGroup(
             reservationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 309, Short.MAX_VALUE)
+            .addGroup(reservationsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(reservationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(resSearchTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reservationSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reservationSearchButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(reservationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelReservationButton)
+                    .addComponent(editReservationButton))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Reservations", reservationsPanel);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Manage Users"));
+
+        userList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(userList);
+
+        addUserButton.setText("Add User");
+
+        editUserButton.setText("Edit User");
+
+        deleteUserButton.setText("Delete User");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(deleteUserButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(addUserButton)
+                    .addComponent(editUserButton))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(addUserButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editUserButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteUserButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Manage Items"));
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Search");
+
+        adminItemSearchButton.setText("Search");
+
+        adminAddItemButton.setText("Add Item");
+
+        adminEditItemButton.setText("Edit Item");
+
+        adminDeleteItemButton.setText("Delete Item");
+
+        adminItemList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane4.setViewportView(adminItemList);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                    .addComponent(adminItemSearchButton)
+                    .addComponent(adminAddItemButton)
+                    .addComponent(adminEditItemButton)
+                    .addComponent(adminDeleteItemButton)
+                    .addComponent(adminItemSearchField, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminItemSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminItemSearchButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminAddItemButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminEditItemButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(adminDeleteItemButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout administrationPanelLayout = new javax.swing.GroupLayout(administrationPanel);
         administrationPanel.setLayout(administrationPanelLayout);
         administrationPanelLayout.setHorizontalGroup(
             administrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 512, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, administrationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(administrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         administrationPanelLayout.setVerticalGroup(
             administrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 309, Short.MAX_VALUE)
+            .addGroup(administrationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Administration", administrationPanel);
 
         jMenu1.setText("File");
+
+        logoutMenuItem.setText("Logout");
+        logoutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(logoutMenuItem);
+        jMenu1.add(jSeparator1);
 
         quitMenuItem.setMnemonic('q');
         quitMenuItem.setText("Quit");
@@ -219,17 +474,29 @@ public class RentIt extends javax.swing.JFrame {
         jMenu2.setText("Reports");
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("About");
+
+        aboutMenuItem.setText("About");
+        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu3.add(aboutMenuItem);
+
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -239,6 +506,77 @@ public class RentIt extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_quitMenuItemActionPerformed
 
+    private void userNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameFieldActionPerformed
+        passwordField.grabFocus();
+    }//GEN-LAST:event_userNameFieldActionPerformed
+
+    private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
+        loginButton.doClick();
+    }//GEN-LAST:event_passwordFieldActionPerformed
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        // testing code
+        // this would be a string representing the users name
+        String user = "Test User"; 
+        if (userNameField.getText().equals("test") && 
+                new String(passwordField.getPassword()).equals("test")){
+            JOptionPane.showMessageDialog(rootPane, "Welcome " + user + ".");
+            // enable the tabs
+            jTabbedPane1.setEnabledAt(1, true);
+            jTabbedPane1.setEnabledAt(2, true);
+            jTabbedPane1.setEnabledAt(3, true);
+            // enable loggin out
+            logoutButton.setEnabled(true);
+            logoutMenuItem.setEnabled(true);
+        }
+        else {
+            JOptionPane.showMessageDialog(rootPane, "Sorry that password is "
+                    + "incorrect");
+        }
+    }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        logout();
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
+    private void logoutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutMenuItemActionPerformed
+        logout();
+    }//GEN-LAST:event_logoutMenuItemActionPerformed
+
+    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+        JOptionPane.showMessageDialog(rootPane, "Rent it Rental Management System\n"
+                + "Created for CIS339\n"
+                + "At DeVry University\n"
+                + "By Group B: Three Guys\n"
+                + "Steven Law\n"
+                + "Charanjeev Johal\n"
+                + "Charles Salonga", "About", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_aboutMenuItemActionPerformed
+
+    private void resSearchTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resSearchTypeComboBoxActionPerformed
+        String item = resSearchTypeComboBox.getSelectedItem().toString();
+        if (item.equals("Customer") || item.equals("Employee")){
+            reservationSearchField.setEnabled(true);
+        } else {
+            reservationSearchField.setEnabled(false);
+        }
+    }//GEN-LAST:event_resSearchTypeComboBoxActionPerformed
+
+    /**
+     * This functions purpose is to maintain a consistent log out behaviour.
+     */
+    private void logout() {
+        JOptionPane.showMessageDialog(rootPane, "Logged out.");
+        // disabling the later panes
+        jTabbedPane1.setSelectedIndex(0);
+        jTabbedPane1.setEnabledAt(1, false);
+        jTabbedPane1.setEnabledAt(2, false);
+        jTabbedPane1.setEnabledAt(3, false);
+        // disabling logging out
+        logoutButton.setEnabled(false);
+        logoutMenuItem.setEnabled(false);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -281,29 +619,57 @@ public class RentIt extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton addCustomerButton;
+    private javax.swing.JButton addUserButton;
+    private javax.swing.JButton adminAddItemButton;
+    private javax.swing.JButton adminDeleteItemButton;
+    private javax.swing.JButton adminEditItemButton;
+    private javax.swing.JList adminItemList;
+    private javax.swing.JButton adminItemSearchButton;
+    private javax.swing.JTextField adminItemSearchField;
     private javax.swing.JPanel administrationPanel;
+    private javax.swing.JButton cancelReservationButton;
     private javax.swing.JList customerList;
     private javax.swing.JButton customerSearchButton;
     private javax.swing.JTextField customerSearchField;
+    private javax.swing.JButton deleteCustomerButton;
+    private javax.swing.JButton deleteUserButton;
+    private javax.swing.JButton editReservationButton;
+    private javax.swing.JButton editUserButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loginButton;
     private javax.swing.JPanel loginPanel;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JMenuItem logoutMenuItem;
     private javax.swing.JButton newTranactionButton;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JMenuItem quitMenuItem;
+    private javax.swing.JComboBox resSearchTypeComboBox;
+    private javax.swing.JButton reservationSearchButton;
+    private javax.swing.JTextField reservationSearchField;
+    private javax.swing.JTable reservationTable;
     private javax.swing.JPanel reservationsPanel;
     private javax.swing.JPanel transactionsPanel;
+    private javax.swing.JList userList;
     private javax.swing.JTextField userNameField;
     // End of variables declaration//GEN-END:variables
 }
