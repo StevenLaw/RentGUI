@@ -204,6 +204,11 @@ public class RentIt extends javax.swing.JFrame {
         addCustomerButton.setText("Add Customer");
 
         newTranactionButton.setText("New Transaction");
+        newTranactionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newTranactionButtonActionPerformed(evt);
+            }
+        });
 
         editCustomerButton.setText("Edit Customer");
 
@@ -567,6 +572,11 @@ public class RentIt extends javax.swing.JFrame {
             reservationSearchField.setEnabled(false);
         }
     }//GEN-LAST:event_resSearchTypeComboBoxActionPerformed
+
+    private void newTranactionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTranactionButtonActionPerformed
+        TransactionDialog transDia = new TransactionDialog(this, true);
+        transDia.newTransaction();
+    }//GEN-LAST:event_newTranactionButtonActionPerformed
 
     /**
      * This functions purpose is to maintain a consistent log out behaviour.
