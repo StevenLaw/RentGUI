@@ -61,7 +61,7 @@ public class RentIt extends javax.swing.JFrame {
         customerList = new javax.swing.JList();
         addCustomerButton = new javax.swing.JButton();
         newTranactionButton = new javax.swing.JButton();
-        deleteCustomerButton = new javax.swing.JButton();
+        editCustomerButton = new javax.swing.JButton();
         reservationsPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         resSearchTypeComboBox = new javax.swing.JComboBox();
@@ -97,8 +97,8 @@ public class RentIt extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(530, 480));
-        setPreferredSize(new java.awt.Dimension(530, 480));
+        setMinimumSize(new java.awt.Dimension(530, 490));
+        setPreferredSize(new java.awt.Dimension(530, 490));
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(517, 420));
 
@@ -205,7 +205,7 @@ public class RentIt extends javax.swing.JFrame {
 
         newTranactionButton.setText("New Transaction");
 
-        deleteCustomerButton.setText("Delete Customer");
+        editCustomerButton.setText("Edit Customer");
 
         javax.swing.GroupLayout transactionsPanelLayout = new javax.swing.GroupLayout(transactionsPanel);
         transactionsPanel.setLayout(transactionsPanelLayout);
@@ -225,10 +225,10 @@ public class RentIt extends javax.swing.JFrame {
                             .addGroup(transactionsPanelLayout.createSequentialGroup()
                                 .addComponent(addCustomerButton)
                                 .addGap(6, 6, 6)
-                                .addComponent(deleteCustomerButton)
+                                .addComponent(editCustomerButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(newTranactionButton)))
-                        .addGap(0, 153, Short.MAX_VALUE)))
+                        .addGap(0, 167, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         transactionsPanelLayout.setVerticalGroup(
@@ -246,7 +246,7 @@ public class RentIt extends javax.swing.JFrame {
                 .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newTranactionButton)
                     .addComponent(addCustomerButton)
-                    .addComponent(deleteCustomerButton))
+                    .addComponent(editCustomerButton))
                 .addContainerGap())
         );
 
@@ -274,6 +274,7 @@ public class RentIt extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        reservationTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(reservationTable);
 
         cancelReservationButton.setText("Cancel Reservation");
@@ -367,18 +368,18 @@ public class RentIt extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Manage Items"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Manage Equipment"));
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Search");
 
         adminItemSearchButton.setText("Search");
 
-        adminAddItemButton.setText("Add Item");
+        adminAddItemButton.setText("Add Equipment");
 
-        adminEditItemButton.setText("Edit Item");
+        adminEditItemButton.setText("Edit Equipment");
 
-        adminDeleteItemButton.setText("Delete Item");
+        adminDeleteItemButton.setText("Delete Equipment");
 
         adminItemList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -472,6 +473,7 @@ public class RentIt extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Reports");
+        jMenu2.setToolTipText("Currently un-implemented");
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("About");
@@ -496,7 +498,7 @@ public class RentIt extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -528,6 +530,10 @@ public class RentIt extends javax.swing.JFrame {
             // enable loggin out
             logoutButton.setEnabled(true);
             logoutMenuItem.setEnabled(true);
+            // disable login GUI
+            loginButton.setEnabled(false);
+            userNameField.setEnabled(false);
+            passwordField.setEnabled(false);
         }
         else {
             JOptionPane.showMessageDialog(rootPane, "Sorry that password is "
@@ -575,6 +581,10 @@ public class RentIt extends javax.swing.JFrame {
         // disabling logging out
         logoutButton.setEnabled(false);
         logoutMenuItem.setEnabled(false);
+        // enable login GUI
+        loginButton.setEnabled(true);
+        userNameField.setEnabled(true);
+        passwordField.setEnabled(true);
     }
     
     /**
@@ -633,8 +643,8 @@ public class RentIt extends javax.swing.JFrame {
     private javax.swing.JList customerList;
     private javax.swing.JButton customerSearchButton;
     private javax.swing.JTextField customerSearchField;
-    private javax.swing.JButton deleteCustomerButton;
     private javax.swing.JButton deleteUserButton;
+    private javax.swing.JButton editCustomerButton;
     private javax.swing.JButton editReservationButton;
     private javax.swing.JButton editUserButton;
     private javax.swing.JLabel jLabel1;
