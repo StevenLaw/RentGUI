@@ -13,6 +13,7 @@ import RentControl.*;
 public class TransactionDialog extends javax.swing.JDialog {
 
     private Transaction trans;
+    private Customer customer;
     
     /**
      * Creates new form TransactionDialog
@@ -123,7 +124,8 @@ public class TransactionDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_payButtonActionPerformed
 
-    public Transaction newTransaction(){
+    public Transaction newTransaction(Customer customer){
+        this.customer = customer;
         this.setVisible(true);
         return trans;
     }

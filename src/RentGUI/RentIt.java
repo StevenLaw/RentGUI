@@ -4,7 +4,13 @@
  */
 package RentGUI;
 
+import RentControl.Customer;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -12,13 +18,16 @@ import javax.swing.JOptionPane;
  */
 public class RentIt extends javax.swing.JFrame {
 
+    private ArrayList<Customer> customers;
+    
     /**
-     * Creates new form RentIt.<br />
+     * Creates new form RentIt.  This method is currently using hard coded data
+     * to represent an actual connection to a database<br />
      * <ol>
      *  <li>Generated initComponents()</li>
      *  <li>Disables the tabs other than the login tab</li>
      *  <li>Disables the logout button and menu item</li>
-     *  <li>Disables the resarvation search field</li>
+     *  <li>Disables the reservation search field</li>
      * </ol>
      */
     public RentIt() {
@@ -32,8 +41,50 @@ public class RentIt extends javax.swing.JFrame {
         logoutMenuItem.setEnabled(false);
         // disabling the reservation search field
         reservationSearchField.setEnabled(false);
+        
+        /* add the list selection listener for customer list and disable buttons
+         * this is so that a customer must be selected to edit of create a new 
+         * transaction
+         */
+        editCustomerButton.setEnabled(false);
+        newTransactionButton.setEnabled(false);
+        CustomerListListener cll = new CustomerListListener();
+        customerList.addListSelectionListener(cll);
+        
+        // initialise focus to the user name
+        userNameField.grabFocus();
+        
+        // The following code instansiates an array list that is used to stand 
+        //      for the eventual database connection.
+        customers = new ArrayList<Customer>();
+        
+        Customer steven = new Customer(1, "Steven", "Law");
+        Customer charles = new Customer(2, "Charles", "Salonga");
+        Customer CJ = new Customer(3, "Charenjeev", "Johal");
+        System.out.println(steven.getClass() + ", " + steven);
+        System.out.println(charles.getClass() + ", " + charles);
+        System.out.println(CJ.getClass() + ", " + CJ);
+        customers.add(steven);
+        customers.add(charles);
+        customers.add(CJ);
     }
 
+    private class CustomerListListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int selection = customerList.getSelectedIndex();
+            if (selection >= 0){
+                editCustomerButton.setEnabled(true);
+                newTransactionButton.setEnabled(true);
+            } else {
+                editCustomerButton.setEnabled(false);
+                newTransactionButton.setEnabled(false);
+            }
+        }
+        
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,7 +111,7 @@ public class RentIt extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         customerList = new javax.swing.JList();
         addCustomerButton = new javax.swing.JButton();
-        newTranactionButton = new javax.swing.JButton();
+        newTransactionButton = new javax.swing.JButton();
         editCustomerButton = new javax.swing.JButton();
         reservationsPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -98,7 +149,6 @@ public class RentIt extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(530, 490));
-        setPreferredSize(new java.awt.Dimension(530, 490));
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(517, 420));
 
@@ -150,11 +200,11 @@ public class RentIt extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                     .addGroup(loginPanelLayout.createSequentialGroup()
-                        .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(loginPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(passwordField))
+                                .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(loginPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -193,24 +243,35 @@ public class RentIt extends javax.swing.JFrame {
         jLabel5.setText("Customer");
 
         customerSearchButton.setText("Search");
-
-        customerList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        customerSearchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customerSearchButtonActionPerformed(evt);
+            }
         });
+
+        customerList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(customerList);
 
         addCustomerButton.setText("Add Customer");
-
-        newTranactionButton.setText("New Transaction");
-        newTranactionButton.addActionListener(new java.awt.event.ActionListener() {
+        addCustomerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newTranactionButtonActionPerformed(evt);
+                addCustomerButtonActionPerformed(evt);
+            }
+        });
+
+        newTransactionButton.setText("New Transaction");
+        newTransactionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newTransactionButtonActionPerformed(evt);
             }
         });
 
         editCustomerButton.setText("Edit Customer");
+        editCustomerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editCustomerButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout transactionsPanelLayout = new javax.swing.GroupLayout(transactionsPanel);
         transactionsPanel.setLayout(transactionsPanelLayout);
@@ -232,7 +293,7 @@ public class RentIt extends javax.swing.JFrame {
                                 .addGap(6, 6, 6)
                                 .addComponent(editCustomerButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newTranactionButton)))
+                                .addComponent(newTransactionButton)))
                         .addGap(0, 167, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -249,7 +310,7 @@ public class RentIt extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newTranactionButton)
+                    .addComponent(newTransactionButton)
                     .addComponent(addCustomerButton)
                     .addComponent(editCustomerButton))
                 .addContainerGap())
@@ -573,10 +634,44 @@ public class RentIt extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_resSearchTypeComboBoxActionPerformed
 
-    private void newTranactionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTranactionButtonActionPerformed
+    private void newTransactionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTransactionButtonActionPerformed
         TransactionDialog transDia = new TransactionDialog(this, true);
-        transDia.newTransaction();
-    }//GEN-LAST:event_newTranactionButtonActionPerformed
+        /*
+         * we need to pass the selected customer to the new transaction menu so 
+         * that it can be added to the transaction.
+         */
+        transDia.newTransaction((Customer)customerList.getSelectedValue());
+    }//GEN-LAST:event_newTransactionButtonActionPerformed
+
+    private void customerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchButtonActionPerformed
+        String searchStr = customerSearchField.getText();
+        DefaultListModel model = new DefaultListModel();
+        int i = 0;
+        for(Customer c : customers) {
+            if(c.toString().contains(searchStr)){
+                model.add(i, c);
+                i++;
+            }
+        }
+        customerList.setModel(model);
+    }//GEN-LAST:event_customerSearchButtonActionPerformed
+
+    private void addCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCustomerButtonActionPerformed
+        // this is dummy code to find the highest CID
+        int max = customers.size() - 1;
+        CustomerDialog cd = new CustomerDialog(this, true);
+        Customer customer = cd.addCustomer(max);
+        if(customer != null){
+            System.out.println(customer);
+            customers.add(customer);
+            System.out.println(customers.size());
+        }
+    }//GEN-LAST:event_addCustomerButtonActionPerformed
+
+    private void editCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCustomerButtonActionPerformed
+        CustomerDialog cd = new CustomerDialog(this, true);
+        Customer customer = cd.editCustomer((Customer)customerList.getSelectedValue());
+    }//GEN-LAST:event_editCustomerButtonActionPerformed
 
     /**
      * This functions purpose is to maintain a consistent log out behaviour.
@@ -680,7 +775,7 @@ public class RentIt extends javax.swing.JFrame {
     private javax.swing.JPanel loginPanel;
     private javax.swing.JButton logoutButton;
     private javax.swing.JMenuItem logoutMenuItem;
-    private javax.swing.JButton newTranactionButton;
+    private javax.swing.JButton newTransactionButton;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JMenuItem quitMenuItem;
     private javax.swing.JComboBox resSearchTypeComboBox;
