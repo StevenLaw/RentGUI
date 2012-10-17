@@ -71,6 +71,7 @@ public class TransactionDialog extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        transTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(transTable);
 
         addButton.setText("Add");

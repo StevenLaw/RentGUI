@@ -171,6 +171,7 @@ public class AddItemDialog extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        itemTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(itemTable);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
