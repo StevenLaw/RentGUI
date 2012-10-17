@@ -4,11 +4,25 @@
  */
 package RentGUI;
 
+import RentControl.*;
+import RentDB.EquipmentTypeDB;
+import RentDB.ItemDB;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Steven Law
  */
 public class AddItemDialog extends javax.swing.JDialog {
+
+    private Transaction trans;
+    private EquipmentTypeDB eqDB;
+    private ItemDB iDB;
 
     /**
      * Creates new form AddItemDialog
@@ -16,6 +30,41 @@ public class AddItemDialog extends javax.swing.JDialog {
     public AddItemDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        eqDB = new EquipmentTypeDB();
+        iDB = new ItemDB();
+
+        EquipmentTypeListener etl = new EquipmentTypeListener();
+        equipTypeList.addListSelectionListener(etl);
+    }
+
+    private class EquipmentTypeListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            EquipmentType EqT = (EquipmentType) equipTypeList.getSelectedValue();
+            int EqID = EqT.getEqID();
+            ArrayList<Item> list = iDB.getItemByType(EqID);
+            DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+            //DefaultTableModel model = new DefaultTableModel();
+
+            // clears the table
+            model.setRowCount(0);
+            //System.out.println(list.size());
+
+            for (Item i : list) {
+                Object[] rowData = new Object[2];
+                rowData[0] = i;
+                if (i.getSalePrice() > 0f) {
+                    rowData[1] = true;
+                } else {
+                    rowData[1] = false;
+                }
+                model.addRow(rowData);
+                //System.out.println(i);
+            }
+            itemTable.setModel(model);
+        }
     }
 
     /**
@@ -28,14 +77,15 @@ public class AddItemDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         typeGroup = new javax.swing.ButtonGroup();
+        chargeGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        searchField = new javax.swing.JTextField();
+        searchButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        equipTypeList = new javax.swing.JList();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        itemTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         rentalRadio = new javax.swing.JRadioButton();
         saleRadio = new javax.swing.JRadioButton();
@@ -44,22 +94,32 @@ public class AddItemDialog extends javax.swing.JDialog {
         endDateChooser = new com.toedter.calendar.JDateChooser();
         cancelButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
+        hourlyRadio = new javax.swing.JRadioButton();
+        dailyRadio = new javax.swing.JRadioButton();
+        weRadio = new javax.swing.JRadioButton();
+        weeklyRadio = new javax.swing.JRadioButton();
+        monthlyRadio = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(432, 411));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Equipment Type"));
 
-        jTextField1.setText("jTextField1");
-
-        jButton3.setText("jButton3");
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        searchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchFieldActionPerformed(evt);
+            }
         });
-        jScrollPane1.setViewportView(jList1);
+
+        searchButton.setText("Search");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+
+        equipTypeList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(equipTypeList);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -70,30 +130,48 @@ public class AddItemDialog extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1)
+                        .addComponent(searchField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                        .addComponent(searchButton)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Item"));
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        itemTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item Number", "Sale"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane3.setViewportView(itemTable);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -101,19 +179,21 @@ public class AddItemDialog extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jLabel1.setText("Start Date");
 
         typeGroup.add(rentalRadio);
+        rentalRadio.setSelected(true);
         rentalRadio.setText("Rental");
 
         typeGroup.add(saleRadio);
@@ -122,8 +202,34 @@ public class AddItemDialog extends javax.swing.JDialog {
         jLabel2.setText("End Date");
 
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+
+        chargeGroup.add(hourlyRadio);
+        hourlyRadio.setSelected(true);
+        hourlyRadio.setText("Hourly");
+
+        chargeGroup.add(dailyRadio);
+        dailyRadio.setText("Daily");
+
+        chargeGroup.add(weRadio);
+        weRadio.setText("Weekend");
+
+        chargeGroup.add(weeklyRadio);
+        weeklyRadio.setText("Weekly");
+
+        chargeGroup.add(monthlyRadio);
+        monthlyRadio.setText("Month");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -135,39 +241,52 @@ public class AddItemDialog extends javax.swing.JDialog {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(startDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 122, Short.MAX_VALUE)
+                                .addComponent(addButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cancelButton))))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(rentalRadio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(saleRadio))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(hourlyRadio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(startDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(dailyRadio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2)
+                                .addComponent(weRadio)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 128, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton)))
+                                .addComponent(weeklyRadio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(monthlyRadio)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rentalRadio)
                     .addComponent(saleRadio))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(startDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
@@ -175,13 +294,74 @@ public class AddItemDialog extends javax.swing.JDialog {
                     .addComponent(endDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
-                    .addComponent(addButton))
-                .addContainerGap())
+                    .addComponent(hourlyRadio)
+                    .addComponent(dailyRadio)
+                    .addComponent(weRadio)
+                    .addComponent(weeklyRadio)
+                    .addComponent(monthlyRadio))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton)
+                    .addComponent(cancelButton)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        if (itemTable.getSelectedRowCount() == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Please select an item",
+                    null, JOptionPane.ERROR_MESSAGE);
+        } else {
+            int[] select = itemTable.getSelectedRows();
+            Item item = (Item) itemTable.getValueAt(select[0], 0);
+            int itemNo = item.getItemNo();
+            if (rentalRadio.isSelected()) {
+                ChargeScale cs = null;
+                if (hourlyRadio.isSelected()) {
+                    cs = ChargeScale.Daily;
+                } else if (dailyRadio.isSelected()) {
+                    cs = ChargeScale.Daily;
+                } else if (weRadio.isSelected()) {
+                    cs = ChargeScale.Weekend;
+                } else if (weeklyRadio.isSelected()) {
+                    cs = ChargeScale.Weekly;
+                } else if (monthlyRadio.isSelected()) {
+                    cs = ChargeScale.Month;
+                }
+                Reservation res = new Reservation(startDateChooser.getDate(),
+                        endDateChooser.getDate(), cs, itemNo);
+                trans.addReservation(res);
+            } else if (saleRadio.isSelected()) {
+                Purchase pur = new Purchase(itemNo);
+                trans.addPurchase(pur);
+            }
+            dispose();
+        }
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        searchButton.doClick();
+    }//GEN-LAST:event_searchFieldActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        ArrayList<EquipmentType> list = eqDB.getEquipmentType(searchField.getText());
+        DefaultListModel model = new DefaultListModel();
+
+        for (EquipmentType eq : list) {
+            model.addElement(eq);
+        }
+        equipTypeList.setModel(model);
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    public void addItem(Transaction trans) {
+        this.trans = trans;
+        setVisible(true);
+    }
 
     /**
      * @param args the command line arguments
@@ -235,20 +415,26 @@ public class AddItemDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
+    private javax.swing.ButtonGroup chargeGroup;
+    private javax.swing.JRadioButton dailyRadio;
     private com.toedter.calendar.JDateChooser endDateChooser;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JList equipTypeList;
+    private javax.swing.JRadioButton hourlyRadio;
+    private javax.swing.JTable itemTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JRadioButton monthlyRadio;
     private javax.swing.JRadioButton rentalRadio;
     private javax.swing.JRadioButton saleRadio;
+    private javax.swing.JButton searchButton;
+    private javax.swing.JTextField searchField;
     private com.toedter.calendar.JDateChooser startDateChooser;
     private javax.swing.ButtonGroup typeGroup;
+    private javax.swing.JRadioButton weRadio;
+    private javax.swing.JRadioButton weeklyRadio;
     // End of variables declaration//GEN-END:variables
 }

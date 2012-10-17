@@ -306,7 +306,6 @@ public class CustomerDialog extends javax.swing.JDialog {
     }
     
     public Customer editCustomer(Customer old){
-        setVisible(true);
         CID = old.getCID();
         fNameField.setText(old.getFirstName());
         mNameField.setText(old.getMiddleName());
@@ -317,6 +316,8 @@ public class CustomerDialog extends javax.swing.JDialog {
         countryField.setText(old.getCountry());
         phoneField.setText(old.getPhone());
         emailField.setText(old.getEmail());
+        
+        setVisible(true);
         return customer;
     }
     

@@ -61,9 +61,9 @@ public class RentIt extends javax.swing.JFrame {
         Customer steven = new Customer(1, "Steven", "Law");
         Customer charles = new Customer(2, "Charles", "Salonga");
         Customer CJ = new Customer(3, "Charenjeev", "Johal");
-        System.out.println(steven.getClass() + ", " + steven);
-        System.out.println(charles.getClass() + ", " + charles);
-        System.out.println(CJ.getClass() + ", " + CJ);
+        //System.out.println(steven.getClass() + ", " + steven);
+        //System.out.println(charles.getClass() + ", " + charles);
+        //System.out.println(CJ.getClass() + ", " + CJ);
         customers.add(steven);
         customers.add(charles);
         customers.add(CJ);
@@ -646,11 +646,9 @@ public class RentIt extends javax.swing.JFrame {
     private void customerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchButtonActionPerformed
         String searchStr = customerSearchField.getText();
         DefaultListModel model = new DefaultListModel();
-        int i = 0;
         for(Customer c : customers) {
-            if(c.toString().contains(searchStr)){
-                model.add(i, c);
-                i++;
+            if(c.toString().toLowerCase().contains(searchStr.toLowerCase())){
+                model.addElement(c);
             }
         }
         customerList.setModel(model);
@@ -662,9 +660,9 @@ public class RentIt extends javax.swing.JFrame {
         CustomerDialog cd = new CustomerDialog(this, true);
         Customer customer = cd.addCustomer(max);
         if(customer != null){
-            System.out.println(customer);
+            //System.out.println(customer);
             customers.add(customer);
-            System.out.println(customers.size());
+            //System.out.println(customers.size());
         }
     }//GEN-LAST:event_addCustomerButtonActionPerformed
 

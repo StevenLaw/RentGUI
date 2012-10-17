@@ -5,6 +5,10 @@
 package RentGUI;
 
 import RentControl.*;
+import RentDB.EquipmentTypeDB;
+import RentDB.ItemDB;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -14,13 +18,22 @@ public class TransactionDialog extends javax.swing.JDialog {
 
     private Transaction trans;
     private Customer customer;
-    
+    private java.awt.Frame parent;
+    private EquipmentTypeDB EqDB;
+    private ItemDB IDB;
+
     /**
      * Creates new form TransactionDialog
      */
     public TransactionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        this.parent = parent;
         initComponents();
+
+        trans = new Transaction(0, PaymentType.Cash, 0, 0);
+
+        EqDB = new EquipmentTypeDB();
+        IDB = new ItemDB();
     }
 
     /**
@@ -33,34 +46,41 @@ public class TransactionDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        transTable = new javax.swing.JTable();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        editButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         payButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(687, 300));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        transTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Equipment Type", "Item", "Sale/Rent", "Price", "Start Date", "End Date", "Total Cost"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(transTable);
 
         addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setText("Delete");
-
-        editButton.setText("Edit");
 
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -88,8 +108,6 @@ public class TransactionDialog extends javax.swing.JDialog {
                         .addComponent(addButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(payButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -105,7 +123,6 @@ public class TransactionDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addButton)
                     .addComponent(deleteButton)
-                    .addComponent(editButton)
                     .addComponent(cancelButton)
                     .addComponent(payButton))
                 .addContainerGap())
@@ -120,16 +137,82 @@ public class TransactionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void payButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payButtonActionPerformed
-        trans = new Transaction(0, PaymentType.Cash, 0, 0);
-        dispose();
+        PaymentDialog pd = new PaymentDialog(parent, true);
+        boolean canceled = pd.pay(trans);
+        if (!canceled) {
+            dispose();
+        }
     }//GEN-LAST:event_payButtonActionPerformed
 
-    public Transaction newTransaction(Customer customer){
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        AddItemDialog addD = new AddItemDialog(parent, true);
+        ArrayList tmp = trans.getPurchases();
+        //System.out.println(tmp.size());
+        addD.addItem(trans);
+        tmp = trans.getPurchases();
+        //System.out.println(tmp.size());
+        updateTable();
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    public Transaction newTransaction(Customer customer) {
         this.customer = customer;
         this.setVisible(true);
         return trans;
     }
-    
+
+    /**
+     * This method updates the table with the correct items.
+     */
+    private void updateTable() {
+        DefaultTableModel model = (DefaultTableModel) transTable.getModel();
+
+        //clear the table
+        model.setRowCount(0);
+
+        ArrayList<Reservation> rentals = trans.getReservations();
+        ArrayList<Purchase> sales = trans.getPurchases();
+        Object[] rowData;
+
+        //System.out.println("Rental Size: " + rentals.size());
+        if (rentals.size() > 0) {
+            rowData = new Object[7];
+            rowData[0] = "Reservations";
+            model.addRow(rowData);
+
+            for (Reservation r : rentals) {
+                rowData = new Object[7];
+                //System.out.println(IDB.getItem(r.getItemNo()));
+                Item item = IDB.getItem(r.getItemNo());
+                EquipmentType eq = EqDB.getEquipmentType(item.getEqID());
+                rowData[0] = "   " + eq.toString();
+                rowData[1] = item;
+                rowData[2] = "Rent";
+                rowData[4] = r.getStartTime();
+                rowData[5] = r.getEndTime();
+                model.addRow(rowData);
+            }
+        }
+        if (sales.size() > 0) {
+            rowData = new Object[7];
+            rowData[0] = "Sales";
+            model.addRow(rowData);
+
+            for (Purchase p : sales) {
+                rowData = new Object[7];
+                //System.out.println(IDB.getItem(p.getItemNo()));
+                Item item = IDB.getItem(p.getItemNo());
+                EquipmentType eq = EqDB.getEquipmentType(item.getEqID());
+                rowData[0] = "   " + eq.toString();
+                rowData[1] = item;
+                rowData[2] = "Sale";
+                model.addRow(rowData);
+            }
+        }
+        rowData = new Object[7];
+        rowData[0] = "Total";
+        model.addRow(rowData);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -183,9 +266,8 @@ public class TransactionDialog extends javax.swing.JDialog {
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteButton;
-    private javax.swing.JButton editButton;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton payButton;
+    private javax.swing.JTable transTable;
     // End of variables declaration//GEN-END:variables
 }
