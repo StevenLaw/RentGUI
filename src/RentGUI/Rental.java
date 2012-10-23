@@ -16,12 +16,12 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Steven Law
  */
-public class RentIt extends javax.swing.JFrame {
+public class Rental extends javax.swing.JFrame {
 
     private ArrayList<Customer> customers;
     
     /**
-     * Creates new form RentIt.  This method is currently using hard coded data
+     * Creates new form Rental.  This method is currently using hard coded data
      * to represent an actual connection to a database<br />
      * <ol>
      *  <li>Generated initComponents()</li>
@@ -30,7 +30,7 @@ public class RentIt extends javax.swing.JFrame {
      *  <li>Disables the reservation search field</li>
      * </ol>
      */
-    public RentIt() {
+    public Rental() {
         initComponents();
         // disabling the later panes
         jTabbedPane1.setEnabledAt(1, false);
@@ -154,7 +154,7 @@ public class RentIt extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Welcome to the Rent It rental management system");
+        jLabel1.setText("Welcome to the Generic rental management system");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -616,7 +616,7 @@ public class RentIt extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Rent it Rental Management System\n"
+        JOptionPane.showMessageDialog(rootPane, "Generic Rental Management System\n"
                 + "Created for CIS339\n"
                 + "At DeVry University\n"
                 + "By Group B: Three Guys\n"
@@ -711,13 +711,13 @@ public class RentIt extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(RentIt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(RentIt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(RentIt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RentIt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -727,7 +727,7 @@ public class RentIt extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new RentIt().setVisible(true);
+                new Rental().setVisible(true);
             }
         });
     }
