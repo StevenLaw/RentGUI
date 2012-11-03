@@ -5,12 +5,18 @@
 package RentGUI;
 
 import RentControl.Customer;
+import RentDB.CustomerDB;
+import RentDB.DBConnector;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -49,31 +55,46 @@ public class Rental extends javax.swing.JFrame {
         editCustomerButton.setEnabled(false);
         newTransactionButton.setEnabled(false);
         CustomerListListener cll = new CustomerListListener();
-        customerList.addListSelectionListener(cll);
+        //customerList.addListSelectionListener(cll);
+        ListSelectionModel lsm = customerTable.getSelectionModel();
+        lsm.addListSelectionListener(cll);
         
         // initialise focus to the user name
         userNameField.grabFocus();
         
-        // The following code instansiates an array list that is used to stand 
-        //      for the eventual database connection.
-        customers = new ArrayList<Customer>();
-        
-        Customer steven = new Customer(1, "Steven", "Law");
-        Customer charles = new Customer(2, "Charles", "Salonga");
-        Customer CJ = new Customer(3, "Charenjeev", "Johal");
-        //System.out.println(steven.getClass() + ", " + steven);
-        //System.out.println(charles.getClass() + ", " + charles);
-        //System.out.println(CJ.getClass() + ", " + CJ);
-        customers.add(steven);
-        customers.add(charles);
-        customers.add(CJ);
+        // initiallise the database
+        initDatabase();
     }
 
+    /**
+     * This method's purpose it to initialise the lists of data in this class 
+     * as well as make sure that there the appropriate tables exist.  If they do
+     * not it will create them.
+     */
+    private void initDatabase() {
+        boolean customerExists = false;
+        
+        while (!customerExists) {
+            try {
+                customers = CustomerDB.getCustomerList();
+                customerExists = true;
+            } catch (Exception e) {
+                try {
+                    CustomerDB.createCustomerList();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(rootPane, "Unable to create "
+                            + "Customer table: " + ex.getLocalizedMessage(), null, 
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+    
     private class CustomerListListener implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            int selection = customerList.getSelectedIndex();
+            int selection = customerTable.getSelectedRow();
             if (selection >= 0){
                 editCustomerButton.setEnabled(true);
                 newTransactionButton.setEnabled(true);
@@ -108,11 +129,11 @@ public class Rental extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         customerSearchField = new javax.swing.JTextField();
         customerSearchButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        customerList = new javax.swing.JList();
         addCustomerButton = new javax.swing.JButton();
         newTransactionButton = new javax.swing.JButton();
         editCustomerButton = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        customerTable = new javax.swing.JTable();
         reservationsPanel = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         resSearchTypeComboBox = new javax.swing.JComboBox();
@@ -148,7 +169,7 @@ public class Rental extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(530, 490));
+        setMinimumSize(new java.awt.Dimension(600, 490));
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(517, 420));
 
@@ -198,7 +219,7 @@ public class Rental extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
                     .addGroup(loginPanelLayout.createSequentialGroup()
                         .addGroup(loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(loginPanelLayout.createSequentialGroup()
@@ -249,9 +270,6 @@ public class Rental extends javax.swing.JFrame {
             }
         });
 
-        customerList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(customerList);
-
         addCustomerButton.setText("Add Customer");
         addCustomerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,28 +291,45 @@ public class Rental extends javax.swing.JFrame {
             }
         });
 
+        customerTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Name", "Street Name", "Phone Number"
+            }
+        ));
+        customerTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane5.setViewportView(customerTable);
+        customerTable.getColumnModel().getColumn(1).setPreferredWidth(250);
+        customerTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+
         javax.swing.GroupLayout transactionsPanelLayout = new javax.swing.GroupLayout(transactionsPanel);
         transactionsPanel.setLayout(transactionsPanelLayout);
         transactionsPanelLayout.setHorizontalGroup(
             transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(transactionsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, transactionsPanelLayout.createSequentialGroup()
+                .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(transactionsPanelLayout.createSequentialGroup()
-                        .addComponent(customerSearchField)
+                        .addContainerGap()
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, transactionsPanelLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(addCustomerButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(customerSearchButton))
-                    .addComponent(jScrollPane1)
-                    .addGroup(transactionsPanelLayout.createSequentialGroup()
+                        .addComponent(editCustomerButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(newTransactionButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, transactionsPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
                             .addGroup(transactionsPanelLayout.createSequentialGroup()
-                                .addComponent(addCustomerButton)
-                                .addGap(6, 6, 6)
-                                .addComponent(editCustomerButton)
+                                .addComponent(jLabel5)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(transactionsPanelLayout.createSequentialGroup()
+                                .addComponent(customerSearchField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newTransactionButton)))
-                        .addGap(0, 167, Short.MAX_VALUE)))
+                                .addComponent(customerSearchButton)))))
                 .addContainerGap())
         );
         transactionsPanelLayout.setVerticalGroup(
@@ -307,7 +342,7 @@ public class Rental extends javax.swing.JFrame {
                     .addComponent(customerSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(customerSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(transactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newTransactionButton)
@@ -354,7 +389,7 @@ public class Rental extends javax.swing.JFrame {
             .addGroup(reservationsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(reservationsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
                     .addGroup(reservationsPanelLayout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -463,7 +498,7 @@ public class Rental extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                     .addComponent(adminItemSearchButton)
                     .addComponent(adminAddItemButton)
                     .addComponent(adminEditItemButton)
@@ -640,18 +675,30 @@ public class Rental extends javax.swing.JFrame {
          * we need to pass the selected customer to the new transaction menu so 
          * that it can be added to the transaction.
          */
-        transDia.newTransaction((Customer)customerList.getSelectedValue());
+        // retrieves the selected row
+        int row = customerTable.getSelectedRow();
+        // retrieves the customer object
+        Customer c = (Customer) customerTable.getValueAt(row, 0);
+        transDia.newTransaction(c);
     }//GEN-LAST:event_newTransactionButtonActionPerformed
 
     private void customerSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchButtonActionPerformed
         String searchStr = customerSearchField.getText();
-        DefaultListModel model = new DefaultListModel();
+        //DefaultListModel model = new DefaultListModel();
+        DefaultTableModel model = (DefaultTableModel) customerTable.getModel();
+        model.setRowCount(0);
         for(Customer c : customers) {
             if(c.toString().toLowerCase().contains(searchStr.toLowerCase())){
-                model.addElement(c);
+                //model.addElement(c);
+                Object[] rowData = new Object[3];
+                rowData[0] = c;
+                rowData[1] = c.getStreet();
+                rowData[2] = c.getPhone();
+                model.addRow(rowData);
             }
         }
-        customerList.setModel(model);
+        customerTable.setModel(model);
+        //customerList.setModel(model);
     }//GEN-LAST:event_customerSearchButtonActionPerformed
 
     private void addCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCustomerButtonActionPerformed
@@ -660,15 +707,32 @@ public class Rental extends javax.swing.JFrame {
         CustomerDialog cd = new CustomerDialog(this, true);
         Customer customer = cd.addCustomer(max);
         if(customer != null){
-            //System.out.println(customer);
-            customers.add(customer);
-            //System.out.println(customers.size());
+            try {
+                CustomerDB.addCustomer(customer);
+                customers = CustomerDB.getCustomerList();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(rootPane, "Unable to add customer "
+                        + "to database: " + ex.getLocalizedMessage(), null, 
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_addCustomerButtonActionPerformed
 
     private void editCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCustomerButtonActionPerformed
         CustomerDialog cd = new CustomerDialog(this, true);
-        Customer customer = cd.editCustomer((Customer)customerList.getSelectedValue());
+        // retrieves the selected row
+        int row = customerTable.getSelectedRow();
+        // retrieves the customer object
+        Customer c = (Customer) customerTable.getValueAt(row, 0);
+        Customer customer = cd.editCustomer(c);
+        try {
+            CustomerDB.updateCustomer(customer);
+            customers = CustomerDB.getCustomerList();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(rootPane, "Failed to update database: "
+                    + ex.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
+        }
+        customerSearchButton.doClick();
     }//GEN-LAST:event_editCustomerButtonActionPerformed
 
     /**
@@ -743,9 +807,9 @@ public class Rental extends javax.swing.JFrame {
     private javax.swing.JTextField adminItemSearchField;
     private javax.swing.JPanel administrationPanel;
     private javax.swing.JButton cancelReservationButton;
-    private javax.swing.JList customerList;
     private javax.swing.JButton customerSearchButton;
     private javax.swing.JTextField customerSearchField;
+    private javax.swing.JTable customerTable;
     private javax.swing.JButton deleteUserButton;
     private javax.swing.JButton editCustomerButton;
     private javax.swing.JButton editReservationButton;
@@ -763,10 +827,10 @@ public class Rental extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loginButton;

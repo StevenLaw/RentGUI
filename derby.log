@@ -1,0 +1,8 @@
+----------------------------------------------------------------
+2012-11-03 06:28:06.025 GMT:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.6.2.1 - (999685): instance a816c00e-013a-c4f4-746a-000004ec4530 
+on database directory C:\Dropbox\Script and programming work\NetBeans\Rent\RentGUI\RentalDB  with class loader sun.misc.Launcher$AppClassLoader@77cde100 
+Loaded from file:/C:/Dropbox/Script%20and%20programming%20work/NetBeans/Rent/derby.jar
+java.vendor=Sun Microsystems Inc.
+java.runtime.version=1.6.0_32-b05
+Database Class Loader started - derby.database.classpath=''

@@ -46,15 +46,15 @@ public class CustomerDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         cityField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        postalField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         countryField = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        phoneField = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         emailField = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
+        phoneField = new javax.swing.JFormattedTextField();
+        postalField = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add/Edit Customer");
@@ -102,12 +102,6 @@ public class CustomerDialog extends javax.swing.JDialog {
 
         jLabel6.setText("Postal Code");
 
-        postalField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                postalFieldActionPerformed(evt);
-            }
-        });
-
         jLabel7.setText("Country");
 
         countryField.addActionListener(new java.awt.event.ActionListener() {
@@ -117,12 +111,6 @@ public class CustomerDialog extends javax.swing.JDialog {
         });
 
         jLabel8.setText("Phone");
-
-        phoneField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                phoneFieldActionPerformed(evt);
-            }
-        });
 
         jLabel9.setText("Email");
 
@@ -143,6 +131,28 @@ public class CustomerDialog extends javax.swing.JDialog {
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
+            }
+        });
+
+        try {
+            phoneField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("### ###-####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        phoneField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                phoneFieldActionPerformed(evt);
+            }
+        });
+
+        try {
+            postalField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("AAAAAA")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        postalField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                postalFieldActionPerformed(evt);
             }
         });
 
@@ -263,17 +273,9 @@ public class CustomerDialog extends javax.swing.JDialog {
         postalField.grabFocus();
     }//GEN-LAST:event_cityFieldActionPerformed
 
-    private void postalFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postalFieldActionPerformed
-        countryField.grabFocus();
-    }//GEN-LAST:event_postalFieldActionPerformed
-
     private void countryFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryFieldActionPerformed
         phoneField.grabFocus();
     }//GEN-LAST:event_countryFieldActionPerformed
-
-    private void phoneFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneFieldActionPerformed
-        emailField.grabFocus();
-    }//GEN-LAST:event_phoneFieldActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         if(fNameField.getText().equals("")||lNameField.getText().equals("")){
@@ -297,6 +299,14 @@ public class CustomerDialog extends javax.swing.JDialog {
         customer = null;
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void phoneFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneFieldActionPerformed
+        emailField.grabFocus();
+    }//GEN-LAST:event_phoneFieldActionPerformed
+
+    private void postalFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_postalFieldActionPerformed
+        countryField.grabFocus();
+    }//GEN-LAST:event_postalFieldActionPerformed
 
     
     public Customer addCustomer(int maxCID){
@@ -388,8 +398,8 @@ public class CustomerDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField lNameField;
     private javax.swing.JTextField mNameField;
-    private javax.swing.JTextField phoneField;
-    private javax.swing.JTextField postalField;
+    private javax.swing.JFormattedTextField phoneField;
+    private javax.swing.JFormattedTextField postalField;
     private javax.swing.JTextField streetField;
     // End of variables declaration//GEN-END:variables
 }
